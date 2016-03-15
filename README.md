@@ -1,6 +1,8 @@
 # Android-Y-PhotoPicker
 Android library project for selecting/capturing multiple images from the device.
+
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
+[ ![Download](https://api.bintray.com/packages/yongbeam/maven/y-photopicker/images/download.svg) ](https://bintray.com/yongbeam/maven/y-photopicker/_latestVersion)
 
 
 # Example
