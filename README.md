@@ -44,8 +44,6 @@ Android library project for selecting/capturing multiple images from the device.
 
 
 4.The Y-PhotoPicker configuration is created using the builder pattern.
-
-### Pick Photo
 ```java
       YPhotoPickerIntent intent = new YPhotoPickerIntent(this);
       intent.setMaxSelectCount(20);
