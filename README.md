@@ -76,7 +76,7 @@ Android library project for selecting/capturing multiple images from the device.
 ```
 
 
-### Image Viewr
+### Image viewer
 ```java
     // start image viewr
     Intent startActivity = new Intent(this , PhotoPagerActivity.class);
