@@ -6,14 +6,7 @@ Android library project for selecting/capturing multiple images from the device.
 
 
 # Example
-![](http://server.yongcloud.co.kr/sc/Cap1.jpg)
-![](http://server.yongcloud.co.kr/sc/Cap2.jpg)
-![](http://server.yongcloud.co.kr/sc/Cap3.jpg)
-![](http://server.yongcloud.co.kr/sc/Cap4.jpg)
-![](http://server.yongcloud.co.kr/sc/Cap5.jpg)
-![](http://server.yongcloud.co.kr/sc/Cap6.jpg)
-![](http://server.yongcloud.co.kr/sc/Cap7.jpg)
-![](http://server.yongcloud.co.kr/sc/Cap8.jpg)
+
 
 
 # Usage
