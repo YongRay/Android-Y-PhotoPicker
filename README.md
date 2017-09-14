@@ -25,11 +25,6 @@ Android library project for selecting/capturing multiple images from the device.
 
     <activity android:name="com.yongbeam.y_photopicker.util.photopicker.PhotoPagerActivity"
         android:theme="@style/Theme.AppCompat.NoActionBar"/>
-
-    <activity
-        android:name="com.yongbeam.y_photopicker.util.photopicker.ucrop.UCropActivity"
-        android:theme="@style/Theme.AppCompat.NoActionBar"
-        android:screenOrientation="portrait"/>
 ```
 
 
@@ -89,7 +84,6 @@ Android library project for selecting/capturing multiple images from the device.
 
 ##Thanks 
 >* [PhotoPicker](https://github.com/donglua/PhotoPicker) 
->* [uCrop](https://github.com/Yalantis/uCrop)
 
 
 # License
