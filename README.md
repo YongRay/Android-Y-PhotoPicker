@@ -14,7 +14,7 @@ Android library project for selecting/capturing multiple images from the device.
 1.Include the library as local library project.
 ```gradle
   dependencies {
-      compile 'com.yongbeam.y_photopicker:y-photopicker:0.0.1'
+      compile 'com.yongbeam.y_photopicker:y-photopicker:0.0.2'
   }
 ```
 
