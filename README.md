@@ -1,3 +1,7 @@
+## [한국어]
+[한국어로 보기](http://mytalkhome.tistory.com/860) 
+
+## [English]
 # Android-Y-PhotoPicker
 Android library project for selecting/capturing multiple images from the device.
 
@@ -6,8 +10,10 @@ Android library project for selecting/capturing multiple images from the device.
 
 
 # Example
-
-
+![sc1](http://cfile7.uf.tistory.com/image/2540704156E8A89905049F)
+![sc2](http://cfile10.uf.tistory.com/image/25769F4156E8A8983CC6B0)
+![sc3](http://cfile5.uf.tistory.com/image/2439704156E8A8980B9FE8)
+![sc4](http://cfile10.uf.tistory.com/image/25769F4156E8A8983CC6B0)
 
 # Usage
 
