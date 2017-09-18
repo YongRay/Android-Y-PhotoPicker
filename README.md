@@ -6,7 +6,7 @@
 Android library project for selecting/capturing multiple images from the device.
 
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
-[ ![Download](https://api.bintray.com/packages/yongbeam/maven/y-photopicker/images/download.svg) ](https://bintray.com/yongbeam/maven/y-photopicker/_latestVersion)
+[![](https://jitpack.io/v/yongbeam/Android-Y-PhotoPicker.svg)](https://jitpack.io/#yongbeam/Android-Y-PhotoPicker)
 
 
 # Example
@@ -19,9 +19,16 @@ Android library project for selecting/capturing multiple images from the device.
 
 1.Include the library as local library project.
 ```gradle
-  dependencies {
-      compile 'com.yongbeam.y_photopicker:y-photopicker:0.0.3'
-  }
+  allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+```gradle
+  compile 'com.github.yongbeam:Android-Y-PhotoPicker:0.0.5'
 ```
 
 2.Add PhotoPickerActivity/PhotoPagerActivity/UCropActivity into your AndroidManifest.xml
