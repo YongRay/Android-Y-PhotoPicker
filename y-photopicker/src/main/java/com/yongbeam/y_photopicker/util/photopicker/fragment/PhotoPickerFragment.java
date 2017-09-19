@@ -108,6 +108,7 @@ public class PhotoPickerFragment extends Fragment {
         listPopupWindow.setModal(true);
         listPopupWindow.setDropDownGravity(Gravity.BOTTOM);
         listPopupWindow.setAnimationStyle(R.style.Animation_AppCompat_DropDownUp);
+        listPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_popup_menu));
 
         listPopupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
