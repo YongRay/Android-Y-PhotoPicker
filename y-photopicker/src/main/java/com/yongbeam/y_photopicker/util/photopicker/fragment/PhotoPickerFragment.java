@@ -13,6 +13,7 @@ import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -169,7 +170,13 @@ public class PhotoPickerFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d("TAG" , "사진촬영 완료" + requestCode);
+        Log.d("TAG" , "사진촬영 완료 " + resultCode );
+
         if (requestCode == ImageCaptureManager.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+
+            Log.d("TAG" , "호출");
 
             captureManager.galleryAddPic();
             if (directories.size() > 0) {

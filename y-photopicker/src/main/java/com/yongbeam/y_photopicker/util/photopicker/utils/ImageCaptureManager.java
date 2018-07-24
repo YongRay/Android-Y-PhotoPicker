@@ -1,13 +1,21 @@
 package com.yongbeam.y_photopicker.util.photopicker.utils;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,15 +55,25 @@ public class ImageCaptureManager {
 
 
   public Intent dispatchTakePictureIntent() throws IOException {
+    Log.d("TAG" , "카메라 호출");
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//    Intent intent = new Intent();
     // Ensure that there's a camera activity to handle the intent
     if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
+
+      ResolveInfo mInfo = mContext.getPackageManager().resolveActivity(takePictureIntent, 0);
+      takePictureIntent.setComponent(new ComponentName(mInfo.activityInfo.packageName, mInfo.activityInfo.name));
+//      takePictureIntent.setAction(Intent.ACTION_MAIN);
+//      takePictureIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+
       // Create the File where the photo should go
       File photoFile = createImageFile();
       // Continue only if the File was successfully created
       if (photoFile != null) {
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-            Uri.fromFile(photoFile));
+        Uri uri = FileProvider.getUriForFile(mContext, "com.yongbeam.y_photopicker.fileprovider", photoFile);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        Log.d("TAG" , "파일저장" + uri.toString());
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
       }
     }
     return takePictureIntent;
@@ -63,12 +81,56 @@ public class ImageCaptureManager {
 
 
   public void galleryAddPic() {
-    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-    File f = new File(mCurrentPhotoPath);
-    Uri contentUri = Uri.fromFile(f);
-    mediaScanIntent.setData(contentUri);
-    mContext.sendBroadcast(mediaScanIntent);
+    String dcimPath = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DCIM).getAbsolutePath();
+
+    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    String resultImageDri = dcimPath + "/"+timeStamp+".jpg";
+    copyFile(mCurrentPhotoPath , resultImageDri );
+
+    File tempImage = new File(mCurrentPhotoPath);
+
+    File f = new File(resultImageDri);
+    Intent mediaIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+    mediaIntent.setData(Uri.fromFile(f));
+    mContext.sendBroadcast(mediaIntent);
+    if(tempImage.delete()){Log.d("Y-Photo-Picker","#### DELETE TEMP IMAGE");}
   }
+
+  /**
+   * 파일 복사
+   * @param strSrc
+   * @param save_file
+   * @return
+   */
+  private boolean copyFile(String strSrc , String save_file){
+    File file = new File(strSrc);
+
+    boolean result;
+    if(file!=null&&file.exists()){
+
+      try {
+
+        FileInputStream fis = new FileInputStream(file);
+        FileOutputStream newfos = new FileOutputStream(save_file);
+        int readcount=0;
+        byte[] buffer = new byte[1024];
+
+        while((readcount = fis.read(buffer,0,1024))!= -1){
+          newfos.write(buffer,0,readcount);
+        }
+        newfos.close();
+        fis.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      result = true;
+    }else{
+      result = false;
+    }
+    return result;
+  }
+
 
 
   public String getCurrentPhotoPath() {

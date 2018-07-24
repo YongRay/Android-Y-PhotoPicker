@@ -3,6 +3,7 @@ package com.yongbeam.y_photopicker.util.photopicker.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,8 +42,11 @@ public class PhotoPagerAdapter extends PagerAdapter {
     if (path.startsWith("http")) {
       uri = Uri.parse(path);
     } else {
-      uri = Uri.fromFile(new File(path));
+//      uri = Uri.fromFile(new File(path));
+      uri = FileProvider.getUriForFile(mContext, "com.yongbeam.y_photopicker.fileprovider", new File(path));
     }
+
+
     Glide.with(mContext)
         .load(uri)
         .error(R.drawable.ic_place_holder)
