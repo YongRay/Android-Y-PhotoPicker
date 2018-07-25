@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.yongbeam.y_photopicker.R;
 import com.yongbeam.y_photopicker.util.photopicker.PhotoPickerActivity;
 
@@ -42,18 +43,16 @@ public class PhotoPagerAdapter extends PagerAdapter {
     if (path.startsWith("http")) {
       uri = Uri.parse(path);
     } else {
-//      uri = Uri.fromFile(new File(path));
       uri = FileProvider.getUriForFile(mContext, "com.yongbeam.y_photopicker.fileprovider", new File(path));
     }
 
-
     Glide.with(mContext)
-        .load(uri)
-        .error(R.drawable.ic_place_holder)
-        .thumbnail(0.4f)
-        .placeholder(R.color.image_loading_error_color)
-        .error(R.color.image_loading_error_color)
-        .into(imageView);
+            .load(uri)
+            .thumbnail(0.4f)
+            .apply(new RequestOptions()
+                    .placeholder(R.color.img_loding_placeholder)
+                    .error(R.drawable.ic_place_holder))
+            .into(imageView);
 
     imageView.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View view) {

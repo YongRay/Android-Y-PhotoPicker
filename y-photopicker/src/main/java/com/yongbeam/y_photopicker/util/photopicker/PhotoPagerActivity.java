@@ -132,16 +132,6 @@ public class PhotoPagerActivity extends AppCompatActivity {
       return true;
     }
 
-//    if (item.getItemId() == R.id.edit){
-//      Uri sourceUri = Uri.fromFile(new File(pagerFragment.getPaths().get(pagerFragment.getCurrentItem())));
-//      Uri destinationUri = Uri.fromFile(new File(createFolders(), getFileNameByUri(getApplicationContext(), sourceUri)));
-//
-//      UCrop.of(sourceUri, destinationUri)
-//              .withAspectRatio(16, 9)
-//              .withMaxResultSize(1024, 1024)
-//              .start(PhotoPagerActivity.this);
-//    }
-
     if (item.getItemId() == R.id.delete) {
       final int index = pagerFragment.getCurrentItem();
 

@@ -28,6 +28,8 @@ public class ImageCaptureManager {
   private String mCurrentPhotoPath;
   private Context mContext;
 
+  private boolean isNativeCamera = false;
+
   public ImageCaptureManager(Context mContext) {
     this.mContext = mContext;
   }
@@ -55,25 +57,22 @@ public class ImageCaptureManager {
 
 
   public Intent dispatchTakePictureIntent() throws IOException {
-    Log.d("TAG" , "카메라 호출");
     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//    Intent intent = new Intent();
-    // Ensure that there's a camera activity to handle the intent
+
     if (takePictureIntent.resolveActivity(mContext.getPackageManager()) != null) {
 
       ResolveInfo mInfo = mContext.getPackageManager().resolveActivity(takePictureIntent, 0);
       takePictureIntent.setComponent(new ComponentName(mInfo.activityInfo.packageName, mInfo.activityInfo.name));
-//      takePictureIntent.setAction(Intent.ACTION_MAIN);
-//      takePictureIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-      // Create the File where the photo should go
+      if(isNativeCamera){
+          takePictureIntent.setAction(Intent.ACTION_MAIN);
+          takePictureIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+      }
+
       File photoFile = createImageFile();
-      // Continue only if the File was successfully created
       if (photoFile != null) {
         Uri uri = FileProvider.getUriForFile(mContext, "com.yongbeam.y_photopicker.fileprovider", photoFile);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        Log.d("TAG" , "파일저장" + uri.toString());
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
       }
     }
     return takePictureIntent;
