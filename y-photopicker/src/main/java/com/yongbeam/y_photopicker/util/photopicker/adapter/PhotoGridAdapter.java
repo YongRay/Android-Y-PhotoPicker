@@ -1,6 +1,8 @@
 package com.yongbeam.y_photopicker.util.photopicker.adapter;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.yongbeam.y_photopicker.R;
 import com.yongbeam.y_photopicker.util.photopicker.entity.Photo;
 import com.yongbeam.y_photopicker.util.photopicker.entity.PhotoDirectory;
@@ -78,13 +81,15 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
         photo = photos.get(position);
       }
 
+      Uri uri = FileProvider.getUriForFile(mContext, "com.yongbeam.y_photopicker.fileprovider", new File(photo.getPath()));
       Glide.with(mContext)
-          .load(new File(photo.getPath()))
-          .centerCrop()
-          .thumbnail(0.1f)
-          .placeholder(R.color.img_loding_placeholder)
-          .error(R.color.image_loading_error_color)
-          .into(holder.ivPhoto);
+              .load(uri)
+              .apply(new RequestOptions()
+                      .placeholder(R.color.img_loding_placeholder)
+                      .error(R.color.image_loading_error_color)
+                      .centerCrop())
+              .into(holder.ivPhoto);
+
 
       final boolean isChecked = isSelected(photo);
 

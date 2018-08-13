@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -40,6 +41,8 @@ public class PhotoPickerActivity extends AppCompatActivity {
   public final static String EXTRA_CHECK_BOX_ONLY       = "CHECK_BOX_ONLY";
   public final static String KEY_SELECTED_PHOTOS        = "SELECTED_PHOTOS";
   public final static String EXTRA_MAX_GRIDE_ITEM_COUNT = "MAX_GRIDE_IMAGE_COUNT";
+  private boolean showCamera = true;
+
 
   private MenuItem menuDoneItem;
 
@@ -56,12 +59,18 @@ public class PhotoPickerActivity extends AppCompatActivity {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.util_activity_photo_picker);
 
-    isREAD_EXTERNAL_STORAGE_Permission();
+    checkExternalStoragePermission();
   }
 
+  @Override
+  protected void onResume() {
+    super.onResume();
 
-  private void isREAD_EXTERNAL_STORAGE_Permission(){
+  }
+
+  private void checkExternalStoragePermission(){
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
@@ -69,11 +78,11 @@ public class PhotoPickerActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
       }
     }else {
-      isCAMERA_Permission();
+      checkCameraPermission();
     }
   }
 
-  private void isCAMERA_Permission(){
+  private void checkCameraPermission(){
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
@@ -81,7 +90,7 @@ public class PhotoPickerActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
       }
     }else {
-      initLayout();
+      init();
     }
   }
 
@@ -90,7 +99,7 @@ public class PhotoPickerActivity extends AppCompatActivity {
     switch (requestCode) {
       case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          isCAMERA_Permission();
+          checkCameraPermission();
         } else {
           Toast.makeText(PhotoPickerActivity.this , "You do not have read permissions." , Toast.LENGTH_LONG ).show();
           finish();
@@ -100,7 +109,7 @@ public class PhotoPickerActivity extends AppCompatActivity {
 
       case MY_PERMISSIONS_REQUEST_CAMERA: {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          initLayout();
+          init();
         } else {
           Toast.makeText(PhotoPickerActivity.this , "There is no camera permissions." , Toast.LENGTH_LONG ).show();
         }
@@ -109,15 +118,13 @@ public class PhotoPickerActivity extends AppCompatActivity {
     }
   }
 
-  private void initLayout(){
-    boolean showCamera = getIntent().getBooleanExtra(EXTRA_SHOW_CAMERA, true);
-    boolean showGif    = getIntent().getBooleanExtra(EXTRA_SHOW_GIF, false);
+  private void init(){
+    showCamera = getIntent().getBooleanExtra(EXTRA_SHOW_CAMERA, true);
+    showGif    = getIntent().getBooleanExtra(EXTRA_SHOW_GIF, false);
     isCheckBoxOnly = getIntent().getBooleanExtra(EXTRA_CHECK_BOX_ONLY, false);
     maxGrideItemCount = getIntent().getIntExtra(EXTRA_MAX_GRIDE_ITEM_COUNT , DEFAULT_MAX_GRIDE_ITEM_COUNT);
 
     setShowGif(showGif);
-
-    setContentView(R.layout.util_activity_photo_picker);
 
     Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
     mToolbar.setTitle(R.string.y_photopicker_image_select_title);
@@ -133,33 +140,44 @@ public class PhotoPickerActivity extends AppCompatActivity {
     }
 
     maxCount = getIntent().getIntExtra(EXTRA_MAX_COUNT, DEFAULT_MAX_COUNT);
-    pickerFragment = (PhotoPickerFragment) getSupportFragmentManager().findFragmentById(R.id.photoPickerFragment);
-    pickerFragment.getPhotoGridAdapter().setShowCamera(showCamera);
-    pickerFragment.getPhotoGridAdapter().setOnItemCheckListener(new OnItemCheckListener() {
-      @Override public boolean OnItemCheck(int position, Photo photo, final boolean isCheck, int selectedItemCount) {
 
-        int total = selectedItemCount + (isCheck ? -1 : 1);
+    setPickerFragment();
+  }
 
-        menuDoneItem.setEnabled(total > 0);
+  private void setPickerFragment(){
 
-        if (maxCount <= 1) {
-          List<Photo> photos = pickerFragment.getPhotoGridAdapter().getSelectedPhotos();
-          if (!photos.contains(photo)) {
-            photos.clear();
-            pickerFragment.getPhotoGridAdapter().notifyDataSetChanged();
+    if(pickerFragment == null){
+      pickerFragment = (PhotoPickerFragment) getSupportFragmentManager().findFragmentById(R.id.photoPickerFragment);
+
+      pickerFragment.getPhotoGridAdapter().setShowCamera(showCamera);
+      pickerFragment.getPhotoGridAdapter().setOnItemCheckListener(new OnItemCheckListener() {
+        @Override public boolean OnItemCheck(int position, Photo photo, final boolean isCheck, int selectedItemCount) {
+
+          int total = selectedItemCount + (isCheck ? -1 : 1);
+
+          menuDoneItem.setEnabled(total > 0);
+
+          if (maxCount <= 1) {
+            List<Photo> photos = pickerFragment.getPhotoGridAdapter().getSelectedPhotos();
+            if (!photos.contains(photo)) {
+              photos.clear();
+              pickerFragment.getPhotoGridAdapter().notifyDataSetChanged();
+            }
+            return true;
           }
+
+          if (total > maxCount) {
+            Toast.makeText(getActivity(), getString(R.string.y_photopicker_over_max_count_tips, maxCount),
+                    LENGTH_LONG).show();
+            return false;
+          }
+          menuDoneItem.setTitle(getString(R.string.y_photopicker_done_with_count, total, maxCount));
           return true;
         }
-
-        if (total > maxCount) {
-          Toast.makeText(getActivity(), getString(R.string.y_photopicker_over_max_count_tips, maxCount),
-                  LENGTH_LONG).show();
-          return false;
-        }
-        menuDoneItem.setTitle(getString(R.string.y_photopicker_done_with_count, total, maxCount));
-        return true;
-      }
-    });
+      });
+    }else{
+      pickerFragment.getPhotoGridAdapter().notifyDataSetChanged();
+    }
   }
 
   /**

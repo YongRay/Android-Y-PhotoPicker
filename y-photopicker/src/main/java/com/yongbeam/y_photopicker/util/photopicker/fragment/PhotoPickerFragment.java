@@ -170,14 +170,7 @@ public class PhotoPickerFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Log.d("TAG" , "사진촬영 완료" + requestCode);
-        Log.d("TAG" , "사진촬영 완료 " + resultCode );
-
         if (requestCode == ImageCaptureManager.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-
-            Log.d("TAG" , "호출");
-
             captureManager.galleryAddPic();
             if (directories.size() > 0) {
 
@@ -186,16 +179,16 @@ public class PhotoPickerFragment extends Fragment {
                 directory.getPhotos().add(INDEX_ALL_PHOTOS, new Photo(path.hashCode(), path));
                 directory.setCoverPath(path);
 
-                String temp_patch = getLastPhotoPath();
-                temp_patch = temp_patch.replace(".jpg", "");
-
-                String newFileName = new File(path).getName();
-
-                if (path.contains(temp_patch)) {
-                }
-
+//                String temp_patch = getLastPhotoPath();
+//                temp_patch = temp_patch.replace(".jpg", "");
+//                String newFileName = new File(path).getName();
+//
+//                if (path.contains(temp_patch)) {
+//                }
                 photoGridAdapter.notifyDataSetChanged();
             }
+        }else{
+            photoGridAdapter.notifyDataSetChanged();
         }
     }
 
